@@ -18,7 +18,11 @@ import org.assertj.core.internal.Objects;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.schema.IndexDefinition;
 
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
+
 import static org.assertj.neo4j.error.ShouldHaveLabel.shouldHaveLabel;
+import static org.assertj.neo4j.error.ShouldHaveMethodDefined.shouldHaveMethodDefined;
 import static org.assertj.neo4j.error.ShouldNotHaveLabel.shouldNotHaveLabel;
 
 /**
@@ -182,5 +186,14 @@ public class IndexDefinitionAssert extends AbstractAssert<IndexDefinitionAssert,
     return this;
   }
 
+  public void hasName(String name) {
+    try {
+      MethodHandles.lookup().findVirtual(IndexDefinition.class, "getName", MethodType.methodType(String.class));
+    } catch (IllegalAccessException e) {
+      e.printStackTrace();
+    } catch (NoSuchMethodException e) {
+      throw Failures.instance().failure(info, shouldHaveMethodDefined(actual, "getName", "3.5.0"));
+    }
+  }
 }
 
